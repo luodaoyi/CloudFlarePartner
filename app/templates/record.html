@@ -1,0 +1,91 @@
+{% extends "layout.html" %}
+{% block title %}添加DNS记录{% endblock %}
+{% block page_name %}添加DNS记录{% endblock %}
+{% block body %}
+    {% with messages =  get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category,message in messages %}
+                <p style="color:{{ category }};">{{ message | safe }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="" class="am-form">
+        <fieldset>
+            <legend>添加 DNS 记录
+                <small> / <a href="{{ url_for('zones',domain=domain) }}">返回</a></small>
+            </legend>
+            <div class="am-form-group">
+                <label for="name">记录名 (如 “@”、“www” 等)</label>
+                <input type="text" name="name" id="name" value="{{ record['name'] }}">
+            </div>
+            <div class="am-form-group">
+                <label for="type">记录类型</label>
+                {% if record['type'] %}
+                    <select name="type" id="type" disabled="disabled">
+                        <option value="{{ record['type'] }}">{{ record['type'] }}</option>
+                    </select>
+                {% else %}
+                    <select name="type" id="type">
+                        <option value="A">A</option>
+                        <option value="AAAA">AAAA</option>
+                        <option value="CNAME">CNAME</option>
+                        <option value="TXT">TXT</option>
+                        <option value="SRV">SRV</option>
+                        <option value="LOC">LOC</option>
+                        <option value="MX">MX</option>
+                        <option value="NS">NS</option>
+                        <option value="SPF">SPF</option>
+                    </select>
+                {% endif %}
+
+            </div>
+            <div class="am-form-group">
+                <label for="doc-ta-1">记录内容</label>
+                <textarea name="content" rows="5" id="doc-ta-1">{{ record['content'] }}</textarea>
+            </div>
+            <div class="am-form-group">
+                <label for="ttl">TTL</label>
+                <select name="ttl" id="ttl">
+                    <option value="1">自动</option>
+                    <option value="120">2 分钟</option>
+                    <option value="300">5 分钟</option>
+                    <option value="600">10 分钟</option>
+                    <option value="900">15 分钟</option>
+                    <option value="1800">30 分钟</option>
+                    <option value="3600">1 小时</option>
+                    <option value="7200">2 小时</option>
+                    <option value="18000">5 小时</option>
+                    <option value="43200">12 小时</option>
+                    <option value="86400">1 天</option>
+                </select>
+            </div>
+            <div class="am-form-group">
+                <label for="proxied">CDN</label>
+                <select name="proxied" id="proxied">
+                    <option value="true" {% if not record or record['proxied'] %} selected="selected" {% endif %}>开启</option>
+                    <option value="false" {% if record and not record['proxied'] %} selected="selected" {% endif %}>关闭</option>
+                </select>
+            </div>
+            {% if record %}
+                {% if record['type'] == 'MX' %}
+                    <div class="am-form-group">
+                        <label for="priority">权重 (仅限 MX 记录)</label>
+                        <input type="number" name="priority" id="priority" step="1" min="1"
+                               value="{{ record['priority'] }}">
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="am-form-group">
+                    <label for="priority">权重 (仅限 MX 记录)</label>
+                    <input type="number" name="priority" id="priority" step="1" min="1" value="10">
+                </div>
+            {% endif %}
+
+            <p>
+                <button type="submit" name="submit" class="am-btn am-btn-default">提交</button>
+            </p>
+        </fieldset>
+    </form>
+
+{% endblock %}

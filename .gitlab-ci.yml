@@ -1,0 +1,11 @@
+image: docker
+
+services:
+  - docker:dind
+
+build:
+  script:
+    #- apk add --no-cache py-pip      # <--
+    #- pip install docker-compose     # <--
+    #- docker-compose up -d
+    docker build -t cloud_flare_partner .

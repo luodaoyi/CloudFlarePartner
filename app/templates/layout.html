@@ -1,0 +1,58 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="TlOxygen CloudFlare Partners">
+    <meta name="keywords" content="TlOxygen, Cloudflare">
+    <meta name="viewport" content="width=800">
+    <title>{% block title %}{% endblock %} | Cloudflare CNAME/IP 高级接入</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <link rel="stylesheet" href="/assets/css/amazeui.min.css">
+    {% if 'user_info' in session %}
+        <style>h1 {
+            color: purple;
+        }</style>
+    {% endif %}
+
+</head>
+<body>
+<div class="am-container">
+    <div class="am-cf am-padding am-padding-bottom-0 data-am-sticky">
+        <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg"><a href="/">BitRabbit</a></strong> /
+            <small>{% block page_name %}{% endblock %}</small>
+{#            /#}
+{#            <small><a href="https://wiki.tloxygen.com/CloudFlare_%E6%8E%A5%E5%85%A5" target="_blank">关于</a></small>#}
+            {% if 'user_info' in session %}
+                /
+                <small><a href="{{ url_for('logout') }} ">退出登录</a></small>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+<hr>
+
+
+<div class="am-container" style=" max-width: 960px">
+
+    {% block body %}
+
+    {% endblock %}
+    <hr>
+
+    <div class="am-container">
+        <p><a href="https://support.cloudflare.com/hc" target="_blank">Cloudflare 相关问题请联系平台客服</a></p>
+        <p>与本站提供的服务的问题, 请联系: <a href="mailto:luodaoyi@icloud.com" target="_blank">luodaoyi@icloud.com</a>, 并注明你的域名</p>
+        {#            <small>#}
+        {#                <p>Load time: 0.001s</p>#}
+        {#                <p>Cf-Ray: 421f809a8ad61e83-SJC / Cf-Railgun: 918e2b4348 0000 origin 57da</p>#}
+        {#            </small>#}
+    </div>
+    <hr>
+    <div class="am-container">
+    </div>
+
+</body>
+</html>

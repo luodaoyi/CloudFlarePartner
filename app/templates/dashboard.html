@@ -1,0 +1,109 @@
+{% extends "layout.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block page_name %}Dashboard{% endblock %}
+{% block body %}
+    <a href="{{ url_for('add') }}" class="am-btn am-btn-success am-round">添加域名</a>
+
+    {% with messages =  get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category,message in messages %}
+                <p style="color:{{ category }};">{{ message | safe }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <table class="am-table am-table-striped am-table-hover">
+        <thead>
+        <tr>
+            <th>域名</th>
+            <th>状态</th>
+            <th>模式</th>
+            <!--<th>本站服务</th>-->
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for zone in zones %}
+            <tr>
+                <td>
+                    {% if 'host' not in zone %}
+                        <a target="_blank"
+                           href="https://www.cloudflare.com/a/overview/{{ zone['name'] }}">{{ zone['name'] }}</a>
+                    {% else %}
+                        <a href="{{ url_for('zones',domain = zone['name']) }}">{{ zone['name'] }}</a>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if zone['status'] == 'pending' %}
+                        <span style="color:orange;">等待中</span>
+                    {% elif zone['status'] == 'active' %}
+                        <span style="color:green;">已激活</span>
+                    {% else %}
+                        <span style="color:red;">未知状态</span>
+                    {% endif %}
+
+                </td>
+                <td>
+                    {% if 'host' not in zone %}
+                        <span style="color:orange;">官网接入</span>
+                        切换为:<a class="domain-confirm" href="{{ url_for('cname',domain = zone['name'],ns = 0) }}"
+                               onclick="return confirm('确认更改接入模式？更改后只能保留前 100 个记录. 只有通用和标准模式才能使用本站 Railgun. ')">通用</a> |
+                        <a href="{{ url_for('cname',domain = zone['name'],ns = 1) }}"
+                           onclick="return confirm('确认更改接入模式？更改后只能保留前 100 个记录. 只有通用和标准模式才能使用本站 Railgun. ')">标准</a>
+                    {% else %}
+                        {% if zone['host']['name'] != partners %}
+                            <span style="color:red;">第三方</span>
+                            切换为:<a href="{{ url_for('cname',domain = zone['name'],ns = 0) }}"
+                                   onclick="return confirm('确认更改接入模式？更改后只能保留前 100 个记录. 只有通用和标准模式才能使用本站 Railgun. ')">通用</a>
+                            |
+                            <a href="{{ url_for('cname',domain = zone['name'],ns = 1) }}"
+                               onclick="return confirm('确认更改接入模式？更改后只能保留前 100 个记录. 只有通用和标准模式才能使用本站 Railgun. ')">标准</a>
+                        {% else %}
+                            {% if zone['type'] == 'partial' %}
+                                <span style="color:green;">通用</span>
+                                切换为: <a href="{{ url_for('cname',domain = zone['name'],ns = 1) }}"
+                                        onclick="return confirm('确认更改接入模式？更改后只能保留前 100 个记录. 只有通用和标准模式才能使用本站 Railgun. ')">标准</a>
+                            {% elif zone['type'] == 'full' %}
+                                <span style="color:blue;">标准</span>
+                                切换为: <a href="{{ url_for('cname',domain = zone['name'],ns = 0) }}"
+                                        onclick="return confirm('确认更改接入模式？更改后只能保留前 100 个记录. 只有通用和标准模式才能使用本站 Railgun. ')">通用</a>
+                            {% endif %}
+                        {% endif %}
+
+                    {% endif %}
+
+                </td>
+                <!--<td><a style="color:red;">未使用</a></td>-->
+                <td><a href="{{ url_for('zones',domain = zone['name']) }}">管理</a> | <a
+                        href="{{ url_for('analytics',domain = zone['name']) }}">高级统计</a>
+                </td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+    <p>第 1/1 页</p><!--<p>点击域名进入管理</p>-->
+
+
+
+    <h2>模式介绍</h2>
+    <ul>
+        <li><strong>通用</strong>: 同时支持 CNAME/IP 和 NS 接入, 但只能<strong>在本站编辑 DNS 记录</strong></li>
+        <li><strong>标准</strong>: 虽然只支持 NS 接入, 但可以<strong>在 Cloudflare 官网编辑 DNS 记录</strong>. 不支持分区解析</li>
+        <li><strong>官网接入</strong>: 域名在 Cloudflare 官网添加, 只支持 NS 接入. 不支持分区解析</li>
+        <li><strong>第三方</strong>: 域名在第三方添加, 在本站使用可能有冲突</li>
+    </ul>
+    <p>
+        只有<strong>通用</strong>和<strong>标准</strong>模式才能使用高级统计 (长达一年) 以及 Railgun </p>
+{#    <h2>使用文档</h2>#}
+{#    <ul>#}
+{#        <li><a href="https://wiki.tloxygen.com/CloudFlare_%E6%8E%A5%E5%85%A5/%E6%95%99%E7%A8%8B"#}
+{#               target="_blank">使用教程</a>: 包括 SSL、IPv6 以及分区解析的配置#}
+{#        </li>#}
+{#        <li><a href="https://wiki.tloxygen.com/CloudFlare_%E6%8E%A5%E5%85%A5/CAA" target="_blank">CAA 配置说明</a>: 包括 CA 列表#}
+{#        </li>#}
+{#        <li><a href="https://wiki.tloxygen.com/CloudFlare_%E6%8E%A5%E5%85%A5/Railgun" target="_blank">Railgun 使用说明</a>:#}
+{#            包括 FAQ 以及价格说明#}
+{#        </li>#}
+{#    </ul>#}
+{% endblock %}

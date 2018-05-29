@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+{% block page_name %}添加域名{% endblock %}
+{% block title %}添加域名{% endblock %}
+
+{% block body %}
+    {% with messages =  get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category,message in messages %}
+                <p style="color:{{ category }};">{{ message | safe  }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="" class="am-form am-form-horizontal">
+        <div class="am-form-group">
+            <label for="doc-ipt-3" class="am-u-sm-2 am-form-label">域名</label>
+            <div class="am-u-sm-10">
+                <input type="text" id="doc-ipt-3" name="domain" placeholder="请输入你的域名">
+            </div>
+        </div>
+        <div class="am-form-group">
+            <label for="type" class="am-u-sm-2 am-form-label">模式</label>
+            <div class="am-u-sm-10"><select name="type" id="type">
+                <option value="cname">通用（CNAME/IP/NS）</option>
+                <option value="ns">标准（NS）</option>
+            </select></div>
+            <p>
+            <h3>模式介绍</h3>
+            <ul>
+                <li><strong>通用</strong>: 同时支持 CNAME/IP 和 NS 接入, 但只能<strong>在本站编辑 DNS 记录</strong></li>
+                <li><strong>标准</strong>: 虽然只支持 NS 接入, 但可以<strong>在 Cloudflare 官网编辑 DNS 记录</strong>. 不支持分区解析</li>
+            </ul>
+            </p>
+        </div>
+        <div class="am-form-group">
+            <!--<p>请务必添加完 TXT 验证记录后再点击添加!</p>-->
+            <div class="am-u-sm-10 am-u-sm-offset-2">
+                <button type="submit" name="submit" class="am-btn am-btn-default">提交</button>
+            </div>
+        </div>
+    </form>
+    <!--<p>请为你的域名添加一条 TXT 记录, 以便完成验证. 不方便这样操作？你可以先<a href="https://www.cloudflare.com/a/add-site" target="_blank">在 Cloudflare.com 上添加网站</a>, 然后在本站更改接入方式. 或者邮箱联系我们协助添加. </p>
+    <p>主机名: <code>_cf</code>, TXT 记录: <code>"https://cloudflare.tlo.xyz 5b90287672e5ac5b573da987793f6f30"</code>. BIND 格式如下: </p>
+    <pre>_cf    IN    TXT    "https://cloudflare.tlo.xyz 5b90287672e5ac5b573da987793f6f30"</pre>-->
+{% endblock %}

@@ -1,0 +1,149 @@
+{% extends "layout.html" %}
+{% block title %}DNS: {{ domain }} {% endblock %}
+{% block page_name %}Console{% endblock %}
+{% block body %}
+    <strong><a href="{{ url_for('zones',domain = domain) }}">{{ domain.upper() }}</a></strong>
+    <hr>
+    <div class="am-scrollable-horizontal">
+        {% with messages =  get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category,message in messages %}
+                    <p style="color:{{ category }};">{{ message | safe  }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <ul>
+            <li><a href="#dns">DNS 管理</a></li>
+            <li><a href="#cname">CNAME 接入</a></li>
+            <li><a href="#ip">IP 接入</a></li>
+            <li><a href="#ns">NS 接入</a></li>
+{#            <li><a href="#ssl">SSL 验证</a></li>#}
+{#            <li><a href="#railgun">Railgun 加速器 (Beta)</a></li>#}
+            <li><a href='https://www.cloudflare.com/a/overview/{{ domain }}' target="_blank">更多设置</a></li>
+        </ul>
+
+        <hr>
+        <h1 id="dns">DNS 管理 /
+            <small><a href='{{ url_for('record',domain=domain,action='add',zone_id=zone['id']) }}'>添加新记录</a></small>
+        </h1>
+        <table class="am-table am-table-striped am-table-hover am-table-striped am-text-nowrap">
+            <thead>
+            <tr>
+                <th>主机名</th>
+                <th>记录类型</th>
+                <th>内容</th>
+                <th>TTL</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for record in dns_records %}
+                <tr>
+                    <td><code>{{ record['name'] }}</code></td>
+                    <td><code>{{ record['type'] }}</code></td>
+                    <td><code>{{ record['content'] }}</code></td>
+                    {% if record['ttl'] == 1 %}
+                        <td>自动</td>
+                    {% else %}
+                        <td>record['ttl']</td>
+                    {% endif %}
+                    <td>
+                        {% if record['proxied'] %}
+                            <a href="{{ url_for('proxy',zone_id=record['zone_id'],record_id=record['id'],on=0) }}"><img
+                                    src="https://cdn.landcement.com/uploads/2017/11/cloud_on.png" height="19"></a>
+                        {% else %}
+                            <a href="{{ url_for('proxy',zone_id=record['zone_id'],record_id=record['id'],on=1) }}"><img
+                                    src="https://cdn.landcement.com/uploads/2017/11/cloud_off.png" height="19"></a>
+                        {% endif %}
+                        | <a
+                            href="{{ url_for('record',domain=domain,action='edit',zone_id=zone['id'],record_id=record['id'] ) }}">编辑</a>
+                        | <a href="{{ url_for('record',domain=domain,action='delete',zone_id=zone['id'],record_id=record['id'] ) }}"
+                             onclick="return confirm('你确认要删除记录: {{ record['name'] }}?')">删除</a></td>
+                </tr>
+
+            {% endfor %}
+
+
+            </tbody>
+        </table>
+        <p>你可以使用 CNAME, IP 和 NS 任意一种方式接入.</p>
+        <hr>
+        <h1 id="cname">CNAME 接入</h1>
+        <table class="am-table am-table-striped am-table-hover am-table-striped am-text-nowrap">
+            <thead>
+            <tr>
+                <th>主机名</th>
+                <th>CNAME</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for record in dns_records %}
+                <tr>
+                    <td><code>{{ record['name'] }}</code></td>
+                    <td><code>{{ record['name'] }}.cdn.cloudflare.net</code></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <hr>
+        <h1 id="ip">IP 接入</h1>
+        <h2>Anycast IPv4</h2>
+        <ul>
+            <li><code>104.24.103.196</code></li>
+            <li><code>104.24.102.196</code></li>
+        </ul>
+        <h2>Anycast IPv6</h2>
+        <ul>
+            <li><code>2400:cb00:2048:1:0:0:6818:67c4</code></li>
+            <li><code>2400:cb00:2048:1:0:0:6818:66c4</code></li>
+        </ul>
+        <hr>
+        <h1 id="ns">NS 接入</h1>
+        <table class="am-table am-table-striped am-table-hover am-table-striped am-text-nowrap">
+            <thead>
+            <tr>
+                <th>主机名</th>
+                <th>NS</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{ domain }}</td>
+{#                <td>ashley.ns.cloudflare.com</td>#}
+                <td>janet.ns.cloudflare.com</td>
+            </tr>
+            <tr>
+                <td>{{ domain }}</td>
+{#                <td>guy.ns.cloudflare.com</td>#}
+                <td>nile.ns.cloudflare.com</td>
+            </tr>
+            </tbody>
+        </table>
+        <hr>
+{#    #}
+{#        <h2>DNSSEC#}
+{#            <small>(仅限 NS 接入)</small>#}
+{#        </h2>#}
+{#        <p>此功能仅限配置了 Cloudflare DNS 的用户使用, 如果你使用的是第三方 DNS 服务，请不要开启此功能，也不要配置 DS 记录, 否则可能会导致域名无法访问. </p>#}
+{#        <p style="color:red;">尚未激活</p>#}
+{#        <p><a href="/?action=dnssec&zoneid=67e35003aa71f521d4d568968174d053&domain=luodaoyi.com&do=active"#}
+{#              onclick="return confirm('此功能仅限配置了 Cloudflare DNS 的用户使用, 如果你使用的是第三方 DNS 服务，请不要开启此功能，也不要配置 DS 记录, 否则可能会导致域名无法访问. ')">开启</a>#}
+{#        </p>#}
+{#        <hr>#}
+{#        <h1 id="ssl">SSL 验证</h1>#}
+{#        <!--<p>从以下任选一个即可. </p>-->#}
+{#        <p style="color:green;">SSL 正常.</p>#}
+{#        <p>你只需要将默认/海外记录指向 Cloudflare, SSL 证书便会自动签发和续期.</p>#}
+{#        <p><a href="?action=ssl_retry&domain=luodaoyi.com&zoneid=67e35003aa71f521d4d568968174d053">立即重新检查 SSL 验证</a></p>#}
+{#        <hr>#}
+{#        <h1 id="railgun">Railgun 加速器 (Beta)</h1>#}
+{#        <p style="color:green;">已经激活</p>#}
+{#        <p><a href="https://www.cloudflare.com/a/performance/tloxygen.com#railgun" target="_blank">更多设置</a></p>#}
+{#        <p>您处于 Railgun 试用期。正式上线后收取<strong>每个域名每年 CN¥60</strong> 的服务费用. 易被攻击网站请联系客户更换高防 Railgun 加速器. </p>#}
+
+
+        <h1><a href='https://www.cloudflare.com/a/overview/{{ domain }}' target="_blank">更多设置</a></h1>
+        <p>本站只提供官网之外的配置. 更多设置, 如 Page Rules、SSL 回源配置、防火墙、缓存配置等, 请使用相同账号登录 Cloudflare.com 查看. <a
+                href='https://www.cloudflare.com/a/overview/{{ domain }}' target="_blank">更多设置</a></p>
+    </div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block title %}Cloudflare CNAME/IP 高级接入, 免费 Railgun!{% endblock %}
+{% block page_name %}Login{% endblock %}
+
+{% block body %}
+    <h1>Cloudflare CNAME/IP 接入</h1>
+    <p>同时也支持 NS 接入</p>
+    <p style="background-color:yellow">目前正处于 Railgun 长连接加速器免费公测阶段! 赶快登录激活, 为动态内容提升数倍速度 (无需服务端额外配置).</p>
+    <p>请登录已有 Cloudflare.com 账号, 或者注册新账号</p>
+    <form method="POST" action="" class="am-form am-form-horizontal">
+        <div class="am-form-group">
+            <label for="doc-ipt-3" class="am-u-sm-2 am-form-label">电子邮件</label>
+            <div class="am-u-sm-10">
+                <input type="email" id="doc-ipt-3" name="cloudflare_email" placeholder="Cloudflare.com 电子邮件">
+            </div>
+        </div>
+
+        <div class="am-form-group">
+            <label for="doc-ipt-pwd-2" class="am-u-sm-2 am-form-label">密码</label>
+            <div class="am-u-sm-10">
+                <input type="password" id="doc-ipt-pwd-2" name="cloudflare_pass" placeholder="Cloudflare.com 密码">
+            </div>
+        </div>
+
+        <div class="am-form-group">
+            <div class="am-u-sm-10 am-u-sm-offset-2">
+                <button type="submit" name="submit" class="am-btn am-btn-default">提交登录 / 注册</button>
+            </div>
+        </div>
+    </form>
+    <p><a href="#"
+          target="_blank">隐私政策</a>. 基本原则：我们不会存储你的任何 Cloudflare 数据</p>
+            {{ error | safe }}
+    <hr>
+{#    <h3><a href="https://wiki.tloxygen.com/CloudFlare_%E6%8E%A5%E5%85%A5/%E6%95%99%E7%A8%8B" target="_blank">使用教程</a>#}
+    </h3>
+{#    <h3><a href="/analytics.php" target="_blank">使用统计</a></h3>#}
+    <p>使用 Cloudflare 可以<a href="https://www.cloudflare.com/security/" target="_blank">确保你服务器和用户的安全</a>, <a
+            href="https://www.cloudflare.com/performance/" target="_blank">提高网站加载速度</a>, <a
+            href="https://blog.cloudflare.com/ddos-prevention-protecting-the-origin/" target="_blank">隐藏源站 IP</a>, <a
+            href="https://www.cloudflare.com/always-online/" target="_blank">使网站永远在线</a>. </p>
+    <ul>
+        <li>NS 接入与 CNAME 接入模式一键切换</li>
+        <li>无限域名的免费 Cloudflare CNAME/IP/NS 接入</li>
+        <li>完整的 DNS 记录管理</li>
+        <li>查看最近一年的统计记录</li>
+        <li>免费海外 Anycast CDN</li>
+        <li>SSL &amp; HTTP/2 支持</li>
+        <li>无限 DDOS 防御</li>
+{#        <li><a target="_blank" href="https://wiki.tloxygen.com/CloudFlare_%E6%8E%A5%E5%85%A5/Railgun">支持 Railgun</a>,#}
+{#            与原站建立长链接, 进一步为动态页面提升速度！#}
+{#        </li>#}
+    </ul><!--<h2><a href="https://domain.tloxygen.com" target="_blank">在 TlOxygen 上购买主机/域名</a></h2>-->
+{% endblock %}
