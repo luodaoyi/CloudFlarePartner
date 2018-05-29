@@ -1,4 +1,9 @@
-version: '2'
+version: '3'
 services:
   web:
-    build: ./
+    image: luodaoyi/CloudFlarePartnner
+    environment:
+      - CF_KEY=your_code
+      - SECRET=your_secret
+    ports:
+      - "3000:80"
