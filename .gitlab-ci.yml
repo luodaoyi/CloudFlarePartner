@@ -20,7 +20,7 @@ build:
   script:
     - echo Building ${STAGING_IMAGE_TAG}
     - docker build -f Dockerfile -t ${PRODUCTION_IMAGE_TAG} .
-    - docker push ${STAGING_IMAGE_TAG}
+    - docker push ${PRODUCTION_IMAGE_TAG}
 
 deploy:
   variables:
