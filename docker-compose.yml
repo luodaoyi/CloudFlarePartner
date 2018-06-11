@@ -1,7 +1,7 @@
 version: '3'
 services:
   web:
-    image: luodaoyi/cloudflarepartnner
+    image: luodaoyi/cloudflarepartner
     environment:
       - CF_KEY=your_code
       - SECRET=your_secret
